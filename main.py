@@ -12,9 +12,9 @@ class NrOrgData:
 
     # Define the date explicitly for January 1st, 2024
 
-    # yesterday = datetime.now() - timedelta(days=1)
-    # starttime = yesterday.strftime("%Y-%m-%d 00:00:00")
-    starttime = "2025-03-13 00:00:00"
+    yesterday = datetime.now() - timedelta(days=1)
+    starttime = yesterday.strftime("%Y-%m-%d 00:00:00")
+    # starttime = "2025-03-13 00:00:00"
 
     url = "https://api.newrelic.com/graphql"
     i, j, k = 0, 15, 0
