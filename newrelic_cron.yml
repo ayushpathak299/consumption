@@ -1,0 +1,36 @@
+name: Run NewRelic Data Fetch
+
+on:
+  schedule:
+    - cron: "0 1 * * *"  # Runs daily at 1 AM UTC (Modify if needed)
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  fetch_newrelic_data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install google-cloud-bigquery requests
+
+      - name: Authenticate with Google Cloud
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_AUTH_JSON }}
+        run: |
+          echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > auth.json
+
+      - name: Run NewRelic Data Fetch script
+        run: python newrelic_script.py  # Ensure script filename matches
+
+      - name: Cleanup
+        run: rm auth.json  # Securely remove credentials after execution
