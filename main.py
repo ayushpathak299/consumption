@@ -7,7 +7,7 @@ import os
 
 
 class NrOrgData:
-    newrelic_key = "NRAK-GFK83BZNUUKWI98G1M13KDR5SVY"
+    newrelic_key = os.getenv("NEWRELIC_API_KEY")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "auth.json"
 
     # Define the date explicitly for January 1st, 2024
