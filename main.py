@@ -8,13 +8,15 @@ import os
 
 class NrOrgData:
     newrelic_key = os.getenv("NEWRELIC_API_KEY")
+    if not newrelic_key:
+        print("❌ ERROR: New Relic API Key is missing!")
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "auth.json"
 
     # Define the date explicitly for January 1st, 2024
 
     yesterday = datetime.now() - timedelta(days=1)
     starttime = yesterday.strftime("%Y-%m-%d 00:00:00")
-    # starttime = "2025-03-13 00:00:00"
+    # starttime = "2025-03-16 00:00:00"
 
     url = "https://api.newrelic.com/graphql"
     i, j, k = 0, 15, 0

@@ -1,36 +1,34 @@
-name: Run NewRelic Data Fetch
+name: Daily NewRelic Cron Job
 
 on:
   schedule:
-    - cron: "0 1 * * *"  # Runs daily at 1 AM UTC (Modify if needed)
-  workflow_dispatch:  # Allows manual triggering
+    - cron: '30 3 * * *'  # 9:00 AM IST = 3:30 AM UTC
+  workflow_dispatch:  # Also allow manual trigger
 
 jobs:
-  fetch_newrelic_data:
+  run-etl:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          pip install --upgrade pip
-          pip install google-cloud-bigquery requests
+          python -m pip install --upgrade pip
+          pip install google-cloud-bigquery python-dotenv requests
 
-      - name: Authenticate with Google Cloud
+      - name: Decode auth.json
+        run: |
+          echo "${{ secrets.GOOGLE_CREDENTIALS_BASE64 }}" | base64 --decode > auth.json
+        shell: bash
+
+      - name: Run ETL Script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_AUTH_JSON }}
-        run: |
-          echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > auth.json
-
-      - name: Run NewRelic Data Fetch script
-        run: python newrelic_script.py  # Ensure script filename matches
-
-      - name: Cleanup
-        run: rm auth.json  # Securely remove credentials after execution
+          NEWRELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY }}
+        run: python main.py
